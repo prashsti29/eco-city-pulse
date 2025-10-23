@@ -95,8 +95,9 @@ export default function MapPanel() {
             { x: 200, y: 310, r: 35, label: "Green Belt" }
           ],
           water: [
-            { x: 370, y: 190, rx: 55, ry: 45, label: "Ulsoor Lake", type: "ellipse" },
-            { x: 480, y: 300, rx: 35, ry: 28, label: "Sankey Tank", type: "ellipse" }
+            { x: 320, y: 150, rx: 50, ry: 40, label: "Ulsoor Lake", type: "ellipse" },
+            { x: 180, y: 250, rx: 38, ry: 30, label: "Sankey Tank", type: "ellipse" },
+            { x: 520, y: 280, rx: 32, ry: 26, label: "Hebbal Lake", type: "ellipse" }
           ],
           heat: [
             { x: 110, y: 260, r: 30, label: "CBD" },
@@ -114,8 +115,8 @@ export default function MapPanel() {
             { x: 190, y: 290, r: 28, label: "Green" }
           ],
           water: [
-            { x: 340, y: 170, rx: 45, ry: 35, label: "Damdama", type: "ellipse" },
-            { x: 510, y: 310, rx: 28, ry: 22, label: "Pond", type: "rect" }
+            { x: 420, y: 220, rx: 48, ry: 38, label: "Damdama", type: "ellipse" },
+            { x: 150, y: 180, rx: 30, ry: 24, label: "Basai", type: "rect" }
           ],
           heat: [
             { x: 120, y: 240, r: 32, label: "Cyber City" },
