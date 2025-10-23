@@ -25,9 +25,44 @@ export default function MapPanel() {
   const [mapData, setMapData] = useState<MapData | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const SATELLITE_IMAGES = {
-    Bengaluru: "https://mt1.google.com/vt/lyrs=s&x=19267&y=12558&z=15",
-    Gurugram: "https://mt1.google.com/vt/lyrs=s&x=19115&y=11786&z=15"
+  // City-specific map configurations
+  const CITY_CONFIGS = {
+    Bengaluru: {
+      baseGradient: 'linear-gradient(135deg, #6d8a5e 0%, #7a9468 25%, #8fa87a 50%, #5f7850 75%, #6d8a5e 100%)',
+      roads: [
+        { x: 50, y: 150, width: 200, height: 4, angle: 0 },
+        { x: 300, y: 100, width: 250, height: 4, angle: 0 },
+        { x: 100, y: 280, width: 150, height: 4, angle: 0 },
+        { x: 200, y: 0, width: 4, height: 250, angle: 90 },
+        { x: 400, y: 80, width: 4, height: 300, angle: 90 },
+      ],
+      urbanBlocks: [
+        { x: 70, y: 170, width: 45, height: 45 },
+        { x: 130, y: 165, width: 40, height: 40 },
+        { x: 320, y: 120, width: 55, height: 50 },
+        { x: 410, y: 130, width: 48, height: 45 },
+        { x: 250, y: 300, width: 42, height: 38 },
+      ]
+    },
+    Gurugram: {
+      baseGradient: 'linear-gradient(135deg, #9a9580 0%, #8a8670 25%, #a5a090 50%, #7d7d68 75%, #9a9580 100%)',
+      roads: [
+        { x: 100, y: 120, width: 180, height: 4, angle: 0 },
+        { x: 320, y: 180, width: 220, height: 4, angle: 0 },
+        { x: 80, y: 260, width: 140, height: 4, angle: 0 },
+        { x: 150, y: 50, width: 4, height: 200, angle: 90 },
+        { x: 380, y: 120, width: 4, height: 250, angle: 90 },
+        { x: 480, y: 80, width: 4, height: 280, angle: 90 },
+      ],
+      urbanBlocks: [
+        { x: 110, y: 140, width: 50, height: 50 },
+        { x: 180, y: 135, width: 45, height: 45 },
+        { x: 330, y: 200, width: 60, height: 55 },
+        { x: 420, y: 195, width: 52, height: 50 },
+        { x: 490, y: 210, width: 48, height: 45 },
+        { x: 160, y: 280, width: 45, height: 40 },
+      ]
+    }
   }
 
   useEffect(() => {
@@ -52,48 +87,98 @@ export default function MapPanel() {
         const res = await fetch(`http://localhost:5555/api/map${cityParam}`);
         const data = await res.json();
         
-        setMapData({
-          vegetation: data.vegetation || [
-            { x: 120, y: 80, r: 35, label: "Park" },
-            { x: 480, y: 120, r: 40, label: "Forest" },
-            { x: 180, y: 300, r: 30, label: "Green" }
+        // City-specific default data
+        const cityDefaults = city === "Bengaluru" ? {
+          vegetation: [
+            { x: 140, y: 90, r: 40, label: "Cubbon Park" },
+            { x: 450, y: 140, r: 45, label: "Lalbagh" },
+            { x: 200, y: 310, r: 35, label: "Green Belt" }
           ],
-          water: data.water || [
-            { x: 350, y: 180, rx: 50, ry: 40, label: "Lake", type: "ellipse" },
-            { x: 500, y: 305, rx: 30, ry: 25, label: "River", type: "rect" }
+          water: [
+            { x: 370, y: 190, rx: 55, ry: 45, label: "Ulsoor Lake", type: "ellipse" },
+            { x: 480, y: 300, rx: 35, ry: 28, label: "Sankey Tank", type: "ellipse" }
           ],
-          heat: data.heat || [
-            { x: 100, y: 250, r: 28, label: "Hot" },
-            { x: 420, y: 100, r: 25, label: "Heat" },
-            { x: 300, y: 50, r: 22, label: "Hot" }
+          heat: [
+            { x: 110, y: 260, r: 30, label: "CBD" },
+            { x: 400, y: 110, r: 28, label: "Airport" },
+            { x: 280, y: 60, r: 25, label: "Industrial" }
           ],
-          encroachment: data.encroachment || [
-            { x: 70, y: 160, width: 50, height: 50, label: "Encr." },
-            { x: 520, y: 320, width: 60, height: 45, label: "Encr." }
+          encroachment: [
+            { x: 80, y: 175, width: 48, height: 48, label: "Encr." },
+            { x: 500, y: 330, width: 55, height: 42, label: "Encr." }
           ]
+        } : {
+          vegetation: [
+            { x: 130, y: 70, r: 32, label: "Biodiv Park" },
+            { x: 460, y: 110, r: 38, label: "Aravalli" },
+            { x: 190, y: 290, r: 28, label: "Green" }
+          ],
+          water: [
+            { x: 340, y: 170, rx: 45, ry: 35, label: "Damdama", type: "ellipse" },
+            { x: 510, y: 310, rx: 28, ry: 22, label: "Pond", type: "rect" }
+          ],
+          heat: [
+            { x: 120, y: 240, r: 32, label: "Cyber City" },
+            { x: 430, y: 95, r: 30, label: "MG Road" },
+            { x: 310, y: 55, r: 26, label: "Sector 29" }
+          ],
+          encroachment: [
+            { x: 75, y: 165, width: 52, height: 52, label: "Encr." },
+            { x: 515, y: 325, width: 58, height: 48, label: "Encr." }
+          ]
+        };
+
+        setMapData({
+          vegetation: data.vegetation || cityDefaults.vegetation,
+          water: data.water || cityDefaults.water,
+          heat: data.heat || cityDefaults.heat,
+          encroachment: data.encroachment || cityDefaults.encroachment
         });
       } catch (err) {
         console.error("Failed to fetch map data:", err);
-        setMapData({
+        
+        // City-specific default data for error fallback
+        const cityDefaults = city === "Bengaluru" ? {
           vegetation: [
-            { x: 120, y: 80, r: 35, label: "Park" },
-            { x: 480, y: 120, r: 40, label: "Forest" },
-            { x: 180, y: 300, r: 30, label: "Green" }
+            { x: 140, y: 90, r: 40, label: "Cubbon Park" },
+            { x: 450, y: 140, r: 45, label: "Lalbagh" },
+            { x: 200, y: 310, r: 35, label: "Green Belt" }
           ],
           water: [
-            { x: 350, y: 180, rx: 50, ry: 40, label: "Lake", type: "ellipse" },
-            { x: 500, y: 305, rx: 30, ry: 25, label: "River", type: "rect" }
+            { x: 370, y: 190, rx: 55, ry: 45, label: "Ulsoor Lake", type: "ellipse" },
+            { x: 480, y: 300, rx: 35, ry: 28, label: "Sankey Tank", type: "ellipse" }
           ],
           heat: [
-            { x: 100, y: 250, r: 28, label: "Hot" },
-            { x: 420, y: 100, r: 25, label: "Heat" },
-            { x: 300, y: 50, r: 22, label: "Hot" }
+            { x: 110, y: 260, r: 30, label: "CBD" },
+            { x: 400, y: 110, r: 28, label: "Airport" },
+            { x: 280, y: 60, r: 25, label: "Industrial" }
           ],
           encroachment: [
-            { x: 70, y: 160, width: 50, height: 50, label: "Encr." },
-            { x: 520, y: 320, width: 60, height: 45, label: "Encr." }
+            { x: 80, y: 175, width: 48, height: 48, label: "Encr." },
+            { x: 500, y: 330, width: 55, height: 42, label: "Encr." }
           ]
-        });
+        } : {
+          vegetation: [
+            { x: 130, y: 70, r: 32, label: "Biodiv Park" },
+            { x: 460, y: 110, r: 38, label: "Aravalli" },
+            { x: 190, y: 290, r: 28, label: "Green" }
+          ],
+          water: [
+            { x: 340, y: 170, rx: 45, ry: 35, label: "Damdama", type: "ellipse" },
+            { x: 510, y: 310, rx: 28, ry: 22, label: "Pond", type: "rect" }
+          ],
+          heat: [
+            { x: 120, y: 240, r: 32, label: "Cyber City" },
+            { x: 430, y: 95, r: 30, label: "MG Road" },
+            { x: 310, y: 55, r: 26, label: "Sector 29" }
+          ],
+          encroachment: [
+            { x: 75, y: 165, width: 52, height: 52, label: "Encr." },
+            { x: 515, y: 325, width: 58, height: 48, label: "Encr." }
+          ]
+        };
+
+        setMapData(cityDefaults);
       } finally {
         setLoading(false);
       }
@@ -134,11 +219,13 @@ export default function MapPanel() {
           </div>
         ) : (
           <>
-            {/* Satellite Background - Gray-green terrain style */}
+            {/* Satellite Background - City-specific terrain */}
             <div 
               className="absolute inset-0"
               style={{
-                background: 'linear-gradient(135deg, #8b9d83 0%, #7a8a6f 25%, #9ba892 50%, #6d7d63 75%, #8b9d83 100%)',
+                background: city && CITY_CONFIGS[city as keyof typeof CITY_CONFIGS] 
+                  ? CITY_CONFIGS[city as keyof typeof CITY_CONFIGS].baseGradient
+                  : 'linear-gradient(135deg, #8b9d83 0%, #7a8a6f 25%, #9ba892 50%, #6d7d63 75%, #8b9d83 100%)',
                 backgroundSize: '400% 400%',
                 transform: `scale(${zoom})`,
                 transformOrigin: "center",
@@ -155,19 +242,36 @@ export default function MapPanel() {
                   `
                 }}
               />
-              {/* Roads/Urban areas */}
+              {/* Roads/Urban areas - City specific */}
               <svg className="absolute inset-0 w-full h-full" viewBox="0 0 600 400">
-                <rect x="50" y="100" width="150" height="4" fill="#555" opacity="0.6" />
-                <rect x="300" y="150" width="200" height="4" fill="#555" opacity="0.6" />
-                <rect x="100" y="250" width="120" height="4" fill="#555" opacity="0.6" />
-                <rect x="150" y="0" width="4" height="200" fill="#555" opacity="0.6" />
-                <rect x="350" y="100" width="4" height="250" fill="#555" opacity="0.6" />
+                {city && CITY_CONFIGS[city as keyof typeof CITY_CONFIGS] && 
+                  CITY_CONFIGS[city as keyof typeof CITY_CONFIGS].roads.map((road, idx) => (
+                    <rect 
+                      key={`road-${idx}`}
+                      x={road.x} 
+                      y={road.y} 
+                      width={road.width} 
+                      height={road.height} 
+                      fill="#555" 
+                      opacity="0.6" 
+                    />
+                  ))
+                }
                 
-                {/* Urban blocks */}
-                <rect x="80" y="120" width="40" height="40" fill="#666" opacity="0.4" />
-                <rect x="140" y="120" width="35" height="35" fill="#666" opacity="0.4" />
-                <rect x="320" y="170" width="50" height="45" fill="#666" opacity="0.4" />
-                <rect x="400" y="180" width="45" height="40" fill="#666" opacity="0.4" />
+                {/* Urban blocks - City specific */}
+                {city && CITY_CONFIGS[city as keyof typeof CITY_CONFIGS] && 
+                  CITY_CONFIGS[city as keyof typeof CITY_CONFIGS].urbanBlocks.map((block, idx) => (
+                    <rect 
+                      key={`block-${idx}`}
+                      x={block.x} 
+                      y={block.y} 
+                      width={block.width} 
+                      height={block.height} 
+                      fill="#666" 
+                      opacity="0.4" 
+                    />
+                  ))
+                }
               </svg>
             </div>
             
