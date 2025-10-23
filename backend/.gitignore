@@ -1,0 +1,4 @@
+# Ignore zips and build files
+*.zip
+node_modules/
+.env

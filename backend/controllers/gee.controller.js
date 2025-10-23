@@ -50,7 +50,7 @@ exports.getInsightsDashboard = async (req, res) => {
 
     // Get encroachment tile (compare with 5 years ago)
     const pastYear = new Date(startDate);
-    pastYear.setFullYear(pastYear.getFullYear() - 5);
+    pastYear.setFullYear(pastYear.getFullYear() - 1);
     const pastStartDate = pastYear.toISOString().split('T')[0];
     const pastEndDate = new Date(endDate);
     pastEndDate.setFullYear(pastEndDate.getFullYear() - 5);

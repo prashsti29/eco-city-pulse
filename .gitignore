@@ -156,3 +156,7 @@ vite.config.ts.timestamp-*
 .vite/
 # Google Cloud credentials
 backend/geospatial-webapp-f9a8007d4bed.json
+# Ignore zips and build files
+*.zip
+node_modules/
+.env"frontend.zip" 
